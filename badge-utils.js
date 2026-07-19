@@ -618,5 +618,221 @@
 
     function int(s) { return parseInt(s, 10); }
 
+    // ---------- RNGdle 新函数 ----------
+
+    /** 回文旋转180度（Strobogrammatic）：0↔0, 1↔1, 6↔9, 8↔8, 9↔6 */
+    Utils.isStrobogrammatic = function(s) {
+        var map = {0:0,1:1,6:9,8:8,9:6};
+        for (var i = 0, j = s.length-1; i <= j; i++, j--) {
+            var a = +s[i], b = +s[j];
+            if (map[a] === undefined || map[a] !== b) return false;
+        }
+        return true;
+    };
+
+    /** Pronic数：n(n+1) ↦ 4n+1 是完全平方 */
+    Utils.isPronic = function(n) {
+        var x = 4 * n + 1;
+        return Utils.isPerfectSquare(x);
+    };
+
+    /** 韵脚：存在相邻相同 */
+    Utils.hasRhyme = function(s) {
+        for (var i = 1; i < s.length; i++) { if (s[i] === s[i-1]) return true; }
+        return false;
+    };
+
+    /** 蛇眼：恰好两个1 */
+    Utils.hasSnakeEyes = function(s) {
+        return Utils.exactCount(s, 1, 2);
+    };
+
+    /** 满堂彩：三带二（任意位置） */
+    Utils.hasFullHouse = function(s) {
+        var f = Utils.countDigitFreq(s);
+        var has3 = false, has2 = false;
+        for (var i = 0; i < 10; i++) {
+            if (f[i] === 3) has3 = true;
+            else if (f[i] === 2) has2 = true;
+        }
+        return has3 && has2;
+    };
+
+    /** 连续满堂彩：XXXYY 或 YYXXX 连续 */
+    Utils.hasContiguousFullHouse = function(s) {
+        for (var i = 0; i <= s.length - 5; i++) {
+            if (s[i]===s[i+1] && s[i+1]===s[i+2] && s[i+3]===s[i+4] && s[i]!==s[i+3]) return true; // XXXYY
+            if (s[i]===s[i+1] && s[i+2]===s[i+3] && s[i+3]===s[i+4] && s[i]!==s[i+2]) return true; // XXYYY
+        }
+        return false;
+    };
+
+    /** 21点：各位和=21 */
+    Utils.isBlackjack = function(s) {
+        return Utils.sumOfDigits(s) === 21;
+    };
+
+    /** 深虚空：恰好两个0 */
+    Utils.hasDeepVoid = function(s) {
+        return Utils.exactCount(s, 0, 2);
+    };
+
+    /** 半洁：去掉任意一位后无重复 */
+    Utils.isSemiClean = function(s) {
+        for (var skip = 0; skip < s.length; skip++) {
+            var seen = {};
+            var ok = true;
+            for (var i = 0; i < s.length; i++) {
+                if (i === skip) continue;
+                if (seen[s[i]]) { ok = false; break; }
+                seen[s[i]] = true;
+            }
+            if (ok) return true;
+        }
+        return false;
+    };
+
+    /** 低球：所有位≤4 */
+    Utils.isLowBall = function(s) {
+        return Utils.allDigitsLTE(s, 4);
+    };
+
+    /** 书挡：前n位==后n位 */
+    Utils.hasBookends = function(s, n) {
+        return s.substring(0, n) === s.substring(s.length - n);
+    };
+
+    /** 镜像书挡：前n位==后n位反转 */
+    Utils.hasMirrorBookends = function(s, n) {
+        var pre = s.substring(0, n), post = s.substring(s.length - n);
+        return pre === post.split('').reverse().join('');
+    };
+
+    /** 口袋镜：至少有一处 s[i]==s[s.length-1-i] 且 i 在前半 */
+    Utils.hasPocketMirror = function(s) {
+        for (var i = 0; i < Math.floor(s.length/2); i++) {
+            if (s[i] === s[s.length-1-i]) return true;
+        }
+        return false;
+    };
+
+    /** τ = 2π = 6.283185307... → "6283185307" */
+    Utils.tauMatchLength = function(s, target) {
+        return Utils.prefixMatchLength(s, target);
+    };
+
+    /** 打乱连续：含 n 个连续数字但顺序打乱（如 312 含 1,2,3） */
+    Utils.hasScrambledConsecutive = function(s, n) {
+        for (var i = 0; i <= s.length - n; i++) {
+            var sub = s.substring(i, i + n);
+            var set = {};
+            for (var j = 0; j < sub.length; j++) set[+sub[j]] = true;
+            var keys = Object.keys(set).map(Number);
+            if (keys.length !== n) continue;
+            keys.sort(function(a,b){return a-b;});
+            if (keys[n-1] - keys[0] === n - 1) return true;
+        }
+        return false;
+    };
+
+    /** 迷你回声：ABA 模式（A≠B 出现在任意位置） */
+    Utils.hasMiniEcho = function(s) {
+        for (var i = 0; i <= s.length - 3; i++) {
+            if (s[i] === s[i+2] && s[i] !== s[i+1]) return true;
+        }
+        return false;
+    };
+
+    /** 丘陵：至少3次升降翻转 */
+    Utils.hasHills = function(s) {
+        var flips = 0, lastDir = null;
+        for (var i = 1; i < s.length; i++) {
+            if (+s[i] === +s[i-1]) continue;
+            var dir = +s[i] > +s[i-1];
+            if (lastDir !== null && dir !== lastDir) flips++;
+            lastDir = dir;
+        }
+        return flips >= 3;
+    };
+
+    /** 单跳：存在相邻差==n */
+    Utils.hasHop = function(s, n) {
+        for (var i = 1; i < s.length; i++) {
+            if (Math.abs(+s[i] - +s[i-1]) === n) return true;
+        }
+        return false;
+    };
+
+    /** 双跳：连续两次跳n（a→a+n→a+2n 或反向） */
+    Utils.hasDoubleHop = function(s, n) {
+        for (var i = 2; i < s.length; i++) {
+            if (+s[i-2] + n === +s[i-1] && +s[i-1] + n === +s[i]) return true;
+            if (+s[i-2] - n === +s[i-1] && +s[i-1] - n === +s[i]) return true;
+        }
+        return false;
+    };
+
+    /** 沙丘：升→平→降（如 1221 或 2332） */
+    Utils.hasDunes = function(s) {
+        for (var i = 0; i <= s.length - 4; i++) {
+            if (+s[i] < +s[i+1] && s[i+1] === s[i+2] && +s[i+2] > +s[i+3]) return true;
+        }
+        return false;
+    };
+
+    /** 节拍器：每两位一组递增（如 132435） */
+    Utils.isMetronome = function(s) {
+        for (var i = 0; i + 2 < s.length; i += 2) {
+            if (+s[i] >= +s[i+1]) return false;
+        }
+        return s.length >= 4;
+    };
+
+    /** 羽毛：恰好一位≥8，其余≤4 */
+    Utils.hasFeather = function(s) {
+        var high = 0, low = 0;
+        for (var i = 0; i < s.length; i++) {
+            if (+s[i] >= 8) high++; else if (+s[i] <= 4) low++;
+        }
+        return high === 1 && low === s.length - 1;
+    };
+
+    /** 萤火虫：偶-奇-偶-奇…且含有数字0 */
+    Utils.hasFirefly = function(s) {
+        return Utils.isAlternating(s) && s.indexOf('0') !== -1;
+    };
+
+    /** 日历：含有效日期模式 MMDDYYYY */
+    Utils.hasCalendar = function(s) {
+        // 尝试匹配 MMDDYYY 或 MMDDYYYY 在任意8位子串
+        for (var i = 0; i <= s.length - 8; i++) {
+            var mm = +s.substring(i, i+2);
+            var dd = +s.substring(i+2, i+4);
+            if (mm >= 1 && mm <= 12 && dd >= 1 && dd <= 31) return true;
+        }
+        return false;
+    };
+
+    /** 方程：a+b=c 或 a-b=c 出现在数字中 */
+    Utils.isEquation = function(s) {
+        for (var i = 1; i <= 4; i++) {
+            for (var j = 0; j + i + i <= s.length; j++) {
+                var a = +s.substring(j, j+i);
+                var b = +s.substring(j+i, j+i+i);
+                var rem = s.length - (j+i+i);
+                for (var k = 1; k <= rem; k++) {
+                    var c = +s.substring(j+i+i, j+i+i+k);
+                    if (a + b === c || (a > b && a - b === c)) return true;
+                }
+            }
+        }
+        return false;
+    };
+
+    /** 世纪：各位和=100 */
+    Utils.isCentury = function(s) {
+        return Utils.sumOfDigits(s) === 100;
+    };
+
     window.BadgeUtils = Utils;
 })();

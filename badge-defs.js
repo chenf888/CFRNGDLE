@@ -661,7 +661,107 @@
             return true;
         } },
     { id: 'lucky-number', name: '幸运数',   emoji: '🍀🔢', score: 99, rarity: '普通',
-        check: function(d) { return U.sumOfDigits(d) % 7 === 0 && U.hasSubstring(d, '7'); } }
+        check: function(d) { return U.sumOfDigits(d) % 7 === 0 && U.hasSubstring(d, '7'); } },
 
-    ]; // ~240 badges
+    // ═══════════════════════════════════════════════
+    // 十九、RNGdle 爬取徽章（约 50 个）
+    // ═══════════════════════════════════════════════
+
+    // ---- 数论 ----
+    { id: 'pronic',           name: '普洛尼克数', emoji: '🧮', score: 100000, rarity: '史诗',
+        check: function(d) { return U.isPronic(int(d)); } },
+    { id: 'strobogrammatic',  name: '旋转不变',   emoji: '🙃',  score: 50000, rarity: '史诗',
+        check: function(d) { return U.isStrobogrammatic(d); } },
+    { id: 'semi-clean',       name: '半洁',       emoji: '🧹',  score: 50, rarity: '普通',
+        check: function(d) { return U.isSemiClean(d); } },
+
+    // ---- 组合模式 ----
+    { id: 'full-house',       name: '满堂彩',     emoji: '🏠',  score: 25, rarity: '平庸',
+        check: function(d) { return U.hasFullHouse(d); } },
+    { id: 'contig-full-house',name: '连续满堂彩', emoji: '🏰',  score: 3000, rarity: '稀有',
+        check: function(d) { return U.hasContiguousFullHouse(d); } },
+    { id: 'snake-eyes',       name: '蛇眼',       emoji: '🎲',  score: 30, rarity: '普通',
+        check: function(d) { return U.hasSnakeEyes(d); } },
+    { id: 'blackjack',        name: '21点',       emoji: '♠️',  score: 21, rarity: '普通',
+        check: function(d) { return U.isBlackjack(d); } },
+    { id: 'deep-void',        name: '深虚空',     emoji: '🕳️',  score: 50, rarity: '普通',
+        check: function(d) { var f=U.countDigitFreq(d); return f[0]>=3 && f[0]<=4; } },
+    { id: 'devil-number',     name: '魔鬼之数',   emoji: '😈',  score: 666, rarity: '普通',
+        check: function(d) { return U.hasSubstring(d, '666') && U.hasSubstring(d, '777'); } },
+
+    // ---- 书挡/镜 ----
+    { id: 'bookends',         name: '书挡',       emoji: '📚',  score: 100, rarity: '普通',
+        check: function(d) { return U.hasBookends(d, 2); } },
+    { id: 'mirror-bookends',  name: '镜像书挡',   emoji: '📖',  score: 150, rarity: '普通',
+        check: function(d) { return U.hasMirrorBookends(d, 2); } },
+    { id: 'pocket-mirror',    name: '口袋镜',     emoji: '🪞',  score: 10, rarity: '平庸',
+        check: function(d) { return U.hasPocketMirror(d); } },
+
+    // ---- τ / 数学常数 ----
+    { id: 'tau-3',            name: 'τ连续3位',  emoji: 'τ3️⃣', score: 6, rarity: '平庸',
+        check: function(d) { return U.tauMatchLength(d, '628') >= 3; } },
+    { id: 'tau-4',            name: 'τ连续4位',  emoji: 'τ4️⃣', score: 62, rarity: '普通',
+        check: function(d) { return U.tauMatchLength(d, '6283') >= 4; } },
+    { id: 'tau-5',            name: 'τ连续5位',  emoji: 'τ5️⃣', score: 628, rarity: '罕见',
+        check: function(d) { return U.tauMatchLength(d, '62831') >= 5; } },
+    { id: 'tau-6',            name: 'τ连续6位',  emoji: 'τ6️⃣', score: 6283, rarity: '稀有',
+        check: function(d) { return U.tauMatchLength(d, '628318') >= 6; } },
+
+    // ---- 打乱连续 ----
+    { id: 'scrambled-3',      name: '打乱三连',   emoji: '🔀3️⃣', score: 30, rarity: '平庸',
+        check: function(d) { return U.hasScrambledConsecutive(d, 3); } },
+    { id: 'scrambled-4',      name: '打乱四连',   emoji: '🔀4️⃣', score: 300, rarity: '普通',
+        check: function(d) { return U.hasScrambledConsecutive(d, 4); } },
+
+    // ---- 节奏/模式 ----
+    { id: 'rhyme',            name: '韵脚',       emoji: '🎶',  score: 5, rarity: '平庸',
+        check: function(d) { return U.hasRhyme(d); } },
+    { id: 'mini-echo',        name: '迷你回声',   emoji: '🔂',  score: 5, rarity: '平庸',
+        check: function(d) { return U.hasMiniEcho(d); } },
+    { id: 'hills',            name: '丘陵',       emoji: '🏞️',  score: 50, rarity: '普通',
+        check: function(d) { return U.hasHills(d) && U.maxConsecutiveSame(d) <= 2; } },
+    { id: 'hop',              name: '跳一跳',     emoji: '🦘',  score: 15, rarity: '平庸',
+        check: function(d) { return U.hasHop(d, 2); } },
+    { id: 'double-hop',       name: '双跳',       emoji: '🦘🦘', score: 150, rarity: '罕见',
+        check: function(d) { return U.hasDoubleHop(d, 2); } },
+    { id: 'dunes',            name: '沙丘',       emoji: '🐫',  score: 40, rarity: '普通',
+        check: function(d) { return U.hasDunes(d); } },
+    { id: 'metronome',        name: '节拍器',     emoji: '🎼',  score: 35, rarity: '普通',
+        check: function(d) { return U.isMetronome(d); } },
+
+    // ---- 特殊条件 ----
+    { id: 'feather',          name: '羽毛',       emoji: '🪶',  score: 50, rarity: '普通',
+        check: function(d) { return U.hasFeather(d); } },
+    { id: 'firefly',          name: '萤火虫',     emoji: '🪲',  score: 80, rarity: '普通',
+        check: function(d) { return U.hasFirefly(d); } },
+    { id: 'low-ball',         name: '低球',       emoji: '📉',  score: 640, rarity: '罕见',
+        check: function(d) { return U.isLowBall(d); } },
+    { id: 'ghost',            name: '幽灵',       emoji: '👻',  score: 30, rarity: '平庸',
+        check: function(d) { return U.maxConsecutiveSame(d) >= 2 && U.maxConsecutiveSame(d) <= 2 && U.hasSubstring(d, '00'); } },
+    { id: 'calendar',         name: '日历',       emoji: '📅',  score: 100, rarity: '普通',
+        check: function(d) { return U.hasCalendar(d); } },
+    { id: 'equation',         name: '方程',       emoji: '🟰',  score: 50, rarity: '普通',
+        check: function(d) { return U.isEquation(d); } },
+    { id: 'century',          name: '世纪和',     emoji: '💯',  score: 10000, rarity: '传说',
+        check: function(d) { return U.isCentury(d); } },
+
+    // ---- 简单子串（RNGdle 特色梗） ----
+    { id: 'meme-67',          name: '六七',       emoji: '🫠',  score: 6, rarity: '平庸',
+        check: function(d) { return U.hasSubstring(d, '67'); } },
+    { id: 'meme-11',          name: '十一',       emoji: '🕚',  score: 1, rarity: '平庸',
+        check: function(d) { return U.hasSubstring(d, '11'); } },
+    { id: 'meme-12',          name: '一打',       emoji: '🍩',  score: 1, rarity: '平庸',
+        check: function(d) { return U.hasSubstring(d, '12'); } },
+    { id: 'tree-fiddy',       name: '树皮五十',   emoji: '🦕',  score: 35, rarity: '普通',
+        check: function(d) { return U.hasSubstring(d, '350'); } },
+    { id: 'double-nine',      name: '双九',       emoji: '🎈',  score: 9, rarity: '平庸',
+        check: function(d) { return U.exactCount(d, 9, 2); } },
+    { id: 'big-brother',      name: '老大哥',     emoji: '👁️',  score: 198, rarity: '普通',
+        check: function(d) { return U.hasSubstring(d, '1984'); } },
+    { id: 'contentment',      name: '知足',       emoji: '😌',  score: 10, rarity: '平庸',
+        check: function(d) { return U.sumOfDigits(d) >= 50 && U.sumOfDigits(d) <= 99; } },
+    { id: 'jackpot',          name: '大奖',       emoji: '💰',  score: 7777, rarity: '稀有',
+        check: function(d) { return U.hasSubstring(d, '777') && U.sumOfDigits(d) === 21; } }
+
+    ]; // ~290 badges
 })();
