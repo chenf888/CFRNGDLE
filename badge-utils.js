@@ -383,5 +383,240 @@
         return range === uniqueCount - 1 && uniqueCount >= 9;
     };
 
+    // ---------- 新增工具函数 ----------
+
+    /** 恰好 n 个 digit */
+    Utils.exactCount = function(s, digit, n) {
+        var c = 0;
+        for (var i = 0; i < s.length; i++) { if (+s[i] === digit) c++; }
+        return c === n;
+    };
+
+    /** 哈沙德数：能被各位和整除 */
+    Utils.isHarshad = function(s) {
+        var sum = Utils.sumOfDigits(s);
+        return sum > 0 && int(s) % sum === 0;
+    };
+
+    /** 莫兰数：哈沙德且商为质数 */
+    Utils.isMoran = function(s) {
+        var sum = Utils.sumOfDigits(s);
+        if (sum === 0) return false;
+        var n = int(s);
+        if (n % sum !== 0) return false;
+        return Utils.isPrime(n / sum);
+    };
+
+    /** 快乐数：各位平方和迭代最终=1 */
+    Utils.isHappy = function(n) {
+        var seen = {};
+        while (n !== 1) {
+            if (seen[n]) return false;
+            seen[n] = true;
+            var sum = 0;
+            while (n > 0) { var d = n % 10; sum += d * d; n = Math.floor(n / 10); }
+            n = sum;
+        }
+        return true;
+    };
+
+    /** 三角数：n(n+1)/2 ⇔ 8n+1 是完全平方 */
+    Utils.isTriangular = function(n) {
+        var x = 8 * n + 1;
+        return Utils.isPerfectSquare(x);
+    };
+
+    /** n 是 base 的幂 */
+    Utils.isPowerOf = function(n, base) {
+        if (n < 1 || base < 2) return false;
+        while (n % base === 0) n /= base;
+        return n === 1;
+    };
+
+    /** 卡塔兰数：C_n = (2n)!/(n!(n+1)!) — 前几个：1,2,5,14,42,132,429,1430,4862,16796,58786… */
+    Utils.isCatalan = function(n) {
+        var catalans = [1,2,5,14,42,132,429,1430,4862,16796,58786,208012,742900,2674440,9694845,35357670,129644790,477638700,1767263190,6564120420];
+        for (var i = 0; i < catalans.length; i++) { if (catalans[i] === n) return true; }
+        return false;
+    };
+
+    /** 相邻位差 ≤1（Turtle） */
+    Utils.isTurtle = function(s) {
+        for (var i = 1; i < s.length; i++) {
+            if (Math.abs(+s[i] - +s[i-1]) > 1) return false;
+        }
+        return true;
+    };
+
+    /** 存在相邻位差 ≤1 */
+    Utils.hasNeighbor = function(s) {
+        for (var i = 1; i < s.length; i++) {
+            if (Math.abs(+s[i] - +s[i-1]) <= 1) return true;
+        }
+        return false;
+    };
+
+    /** 所有相邻位差 ≥5 */
+    Utils.isFarNeighbor = function(s) {
+        for (var i = 1; i < s.length; i++) {
+            if (Math.abs(+s[i] - +s[i-1]) < 5) return false;
+        }
+        return true;
+    };
+
+    /** 存在相邻位差 ≥7（悬崖） */
+    Utils.hasCliff = function(s) {
+        for (var i = 1; i < s.length; i++) {
+            if (Math.abs(+s[i] - +s[i-1]) >= 7) return true;
+        }
+        return false;
+    };
+
+    /** 高原：连续≥n位相同且不在开头/结尾 */
+    Utils.hasPlateau = function(s, n) {
+        for (var i = 1; i <= s.length - n; i++) {
+            var ok = true;
+            for (var j = 1; j < n; j++) { if (s[i] !== s[i+j]) { ok = false; break; } }
+            if (ok && i > 0 && i + n < s.length && s[i-1] !== s[i] && s[i+n] !== s[i]) return true;
+        }
+        return false;
+    };
+
+    /** 波浪：严格交替升降 ≥n 次 */
+    Utils.isWave = function(s, n) {
+        if (s.length < n + 1) return false;
+        var flips = 0;
+        var lastDir = null;
+        for (var i = 1; i < s.length; i++) {
+            if (s[i] === s[i-1]) continue;
+            var dir = +s[i] > +s[i-1];
+            if (lastDir !== null && dir !== lastDir) flips++;
+            lastDir = dir;
+        }
+        return flips >= n;
+    };
+
+    /** 过山车：至少 peaks 个山峰（升→降拐点） */
+    Utils.isRollercoaster = function(s, peaks) {
+        var count = 0;
+        for (var i = 1; i < s.length - 1; i++) {
+            if (+s[i] > +s[i-1] && +s[i] > +s[i+1]) count++;
+        }
+        return count >= peaks;
+    };
+
+    /** 恰好一对重复，其余9位互不相同 */
+    Utils.hasExactPair = function(s) {
+        var f = Utils.countDigitFreq(s);
+        var pairs = 0, singles = 0;
+        for (var i = 0; i < 10; i++) {
+            if (f[i] === 2) pairs++;
+            else if (f[i] === 1) singles++;
+        }
+        return pairs === 1 && singles === 9;
+    };
+
+    /** 三明治：首位==末位，中间不含该数字 */
+    Utils.isSandwich = function(s) {
+        if (s[0] !== s[s.length-1]) return false;
+        var d = s[0];
+        for (var i = 1; i < s.length - 1; i++) { if (s[i] === d) return false; }
+        return true;
+    };
+
+    /** 正则形：第1==第11, 第2==第10, ... 第5==第7 */
+    Utils.isSymmetricPairs = function(s) {
+        for (var i = 0; i < Math.floor(s.length/2); i++) {
+            if (s[i] !== s[s.length-1-i]) return false;
+        }
+        return true;
+    };
+
+    /** 只含指定数字集合 */
+    Utils.onlyFrom = function(s, digits) {
+        for (var i = 0; i < s.length; i++) { if (digits.indexOf(+s[i]) === -1) return false; }
+        return true;
+    };
+
+    /** 不含指定数字集合 */
+    Utils.noneFrom = function(s, digits) {
+        for (var i = 0; i < s.length; i++) { if (digits.indexOf(+s[i]) !== -1) return false; }
+        return true;
+    };
+
+    /** 奇偶数量差 ≤diff */
+    Utils.halfEvenHalfOdd = function(s, diff) {
+        var even = 0, odd = 0;
+        for (var i = 0; i < s.length; i++) {
+            if (+s[i] % 2 === 0) even++; else odd++;
+        }
+        return Math.abs(even - odd) <= diff;
+    };
+
+    /** 包含 ABAB 模式（如1212） */
+    Utils.hasABAB = function(s) {
+        for (var i = 0; i <= s.length - 4; i++) {
+            if (s[i] === s[i+2] && s[i+1] === s[i+3] && s[i] !== s[i+1]) return true;
+        }
+        return false;
+    };
+
+    /** 包含 ABCABC 模式（如123123） */
+    Utils.hasABCABC = function(s) {
+        for (var i = 0; i <= s.length - 6; i++) {
+            if (s[i] === s[i+3] && s[i+1] === s[i+4] && s[i+2] === s[i+5] &&
+                s[i] !== s[i+1] && s[i+1] !== s[i+2] && s[i] !== s[i+2]) return true;
+        }
+        return false;
+    };
+
+    /** 包含循环旋转子串 — s 的某一旋转是 s 的子串（非自身，长度≥3） */
+    Utils.hasRotation = function(s) {
+        // 检查是否存在长度≥3的子串A和偏移k使得A旋转后出现在别处
+        for (var len = 3; len <= 5; len++) {
+            for (var i = 0; i <= s.length - len; i++) {
+                var sub = s.substring(i, i + len);
+                // 旋转1位：sub[1..] + sub[0]
+                var rot = sub.substring(1) + sub[0];
+                if (s.indexOf(rot) !== -1 && s.indexOf(rot) !== i) return true;
+            }
+        }
+        return false;
+    };
+
+    /** ABA 开头（第1==第3, 第2不同） */
+    Utils.startsWithABA = function(s) {
+        return s[0] === s[2] && s[0] !== s[1];
+    };
+
+    /** 包含连续 ≥len 位递增差1 */
+    Utils.hasIncreasingRun = function(s, len) {
+        var run = 1;
+        for (var i = 1; i < s.length; i++) {
+            if (+s[i] === +s[i-1] + 1) { run++; if (run >= len) return true; }
+            else run = 1;
+        }
+        return false;
+    };
+
+    /** 包含连续 ≥len 位递减差1 */
+    Utils.hasDecreasingRun = function(s, len) {
+        var run = 1;
+        for (var i = 1; i < s.length; i++) {
+            if (+s[i] === +s[i-1] - 1) { run++; if (run >= len) return true; }
+            else run = 1;
+        }
+        return false;
+    };
+
+    /** 梅森素数：2^p-1 且是质数 */
+    Utils.isMersennePrime = function(n) {
+        if (!Utils.isPrime(n)) return false;
+        var x = n + 1;
+        return Utils.isPowerOf(x, 2);
+    };
+
+    function int(s) { return parseInt(s, 10); }
+
     window.BadgeUtils = Utils;
 })();
