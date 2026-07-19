@@ -197,10 +197,10 @@
     // 2位子串 — 平庸
     { id: 'meme-69',      name: '六九',        emoji: '6️⃣9️⃣',  score: 1,    rarity: '平庸', check: function(d){return U.hasSubstring(d,'69');} },
     { id: 'meme-78',      name: '七八',        emoji: '7️⃣8️⃣',  score: 1,    rarity: '平庸', check: function(d){return U.hasSubstring(d,'78');} },
-    { id: 'meme-91',      name: '九一',        emoji: '9️⃣1️⃣',  score: 8649999,    rarity: '神话', check: function(d){return U.hasSubstring(d,'91');} },
+    { id: 'meme-91',      name: '九一',        emoji: '9️⃣1️⃣',  score: 10,    rarity: '普通', check: function(d){return U.hasSubstring(d,'91');} },
     { id: 'meme-42',      name: '生命的意义',  emoji: '🐬',     score: 1,    rarity: '平庸', check: function(d){return U.hasSubstring(d,'42');} },
     { id: 'meme-86',      name: '中国区号',    emoji: '🇨🇳',     score: 1,    rarity: '平庸', check: function(d){return U.hasSubstring(d,'86');} },
-    { id: 'meme-62',      name: '六二',        emoji: '6️⃣2️⃣',  score: 1000,    rarity: '稀有', check: function(d){return U.hasSubstring(d,'62');} },
+    { id: 'meme-62',      name: '六二',        emoji: '6️⃣2️⃣',  score: 10,    rarity: '普通', check: function(d){return U.hasSubstring(d,'62');} },
 
     // 3位子串 — 平庸
     { id: 'meme-233',     name: '猫笑',        emoji: '🐱',     score: 10,   rarity: '普通', check: function(d){return U.hasSubstring(d,'233');} },
