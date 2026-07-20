@@ -196,6 +196,41 @@ html[data-theme="light"] .toast {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
+/* ===== 徽章悬浮提示框 ===== */
+.tooltip {
+    position: fixed;
+    z-index: 998;
+    background: var(--surface-raised);
+    color: var(--prose);
+    border: 1px solid var(--outline-strong);
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-family: var(--font-ui);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    line-height: 1.5;
+    max-width: 300px;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.tooltip--show {
+    opacity: 1;
+}
+
+.tooltip__desc {
+    white-space: normal;
+    word-break: break-word;
+}
+
+html[data-theme="light"] .tooltip {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
 /* ===== 右上角按钮组 ===== */
 .header-actions {
     position: absolute;
