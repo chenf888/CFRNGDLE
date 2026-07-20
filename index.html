@@ -28,13 +28,22 @@
 
         <div class="badge-area" id="badgeArea">
             <div class="badge-area__scores">
-                <div class="badge-score-item">
-                    <span class="badge-score-label">当前数字 TP：</span>
+                <div class="badge-score-stats">
+                    <span class="badge-score-label">总次数</span>
+                    <span class="badge-score-value" id="rollCount">0</span>
+                </div>
+                <div class="badge-score-stats">
+                    <span class="badge-score-label">当前 TP</span>
                     <span class="badge-score-value" id="currentScore">0</span>
                 </div>
-                <div class="badge-score-item">
-                    <span class="badge-score-label">总 TP：</span>
+                <div class="badge-score-stats">
+                    <span class="badge-score-label">总 TP</span>
                     <span class="badge-score-value" id="totalScore">0</span>
+                </div>
+                <div class="badge-score-stats" id="bestRollBox" style="display:none">
+                    <span class="badge-score-label">最佳</span>
+                    <span class="badge-score-best-num" id="bestRollNum"></span>
+                    <span class="badge-score-best-tp" id="bestRollTP"></span>
                 </div>
             </div>
             <div class="badge-list" id="badgeList"></div>

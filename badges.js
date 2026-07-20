@@ -1,8 +1,7 @@
-// badges.js – 徽章管理模块（v3 — 稀有度排序 + 分页 + 新徽章置顶）
+// badges.js – 徽章管理模块（v4 — +统计 +最佳）
 (function() {
     'use strict';
 
-    // ---------- 稀有度排序（稀有→普通） ----------
     var RARITY_ORDER = ['终结','超越','神话','传说','史诗','稀有','罕见','普通','平庸'];
     var DISPLAY_LIMIT = 20;
 
@@ -19,18 +18,22 @@
     var currentNumberStr = '';
     var newBadgeIds = {};
     var showAllBadges = false;
+    var totalRolls = 0;
+    var bestRollNum = '';
+    var bestRollTP = 0;
 
     // ---------- localStorage ----------
     function saveToStorage() {
         try {
             var data = {
                 earnedBadges: earnedBadges,
-                totalTP: totalTP
+                totalTP: totalTP,
+                totalRolls: totalRolls,
+                bestRollNum: bestRollNum,
+                bestRollTP: bestRollTP
             };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        } catch(e) {
-            // 静默失败（存储满等）
-        }
+        } catch(e) {}
     }
 
     function loadFromStorage() {
@@ -38,30 +41,29 @@
             var raw = localStorage.getItem(STORAGE_KEY);
             if (!raw) return;
             var data = JSON.parse(raw);
-            if (data.earnedBadges && Array.isArray(data.earnedBadges)) {
-                earnedBadges = data.earnedBadges;
-            }
-            if (typeof data.totalTP === 'number') {
-                totalTP = data.totalTP;
-            }
-        } catch(e) {
-            earnedBadges = [];
-            totalTP = 0;
-        }
+            if (data.earnedBadges && Array.isArray(data.earnedBadges)) earnedBadges = data.earnedBadges;
+            if (typeof data.totalTP === 'number') totalTP = data.totalTP;
+            if (typeof data.totalRolls === 'number') totalRolls = data.totalRolls;
+            if (typeof data.bestRollTP === 'number') bestRollTP = data.bestRollTP;
+            if (typeof data.bestRollNum === 'string') bestRollNum = data.bestRollNum;
+        } catch(e) { earnedBadges = []; totalTP = 0; totalRolls = 0; }
     }
 
     // ---------- DOM 引用 ----------
     var badgeListEl = null;
     var totalScoreSpan = null;
     var currentScoreSpan = null;
+    var rollCountSpan = null;
+    var bestRollNumSpan = null;
+    var bestRollTPSpan = null;
+    var bestRollBox = null;
 
-    // ---------- 创建单个徽章 pill ----------
+    // ---------- 创建徽章 pill ----------
     function createBadgePill(badge, isActive, isNew) {
         if (!badge) return document.createTextNode('');
         var pill = document.createElement('span');
         var activeClass = isActive ? '' : 'badge-pill--inactive';
-        var rarityClass = 'badge-pill--' + badge.rarity;
-        pill.className = 'badge-pill ' + rarityClass + ' ' + activeClass;
+        pill.className = 'badge-pill badge-pill--' + badge.rarity + ' ' + activeClass;
         var countDisplay = badge.count > 1 ? ' \u00d7' + badge.count : '';
         var newTag = isNew ? '<span class="badge-new">\u65b0\uff01</span>' : '';
         pill.innerHTML =
@@ -73,7 +75,6 @@
         return pill;
     }
 
-    // ---------- 创建分隔线 ----------
     function createSeparator(label) {
         var sep = document.createElement('div');
         sep.className = 'badge-separator';
@@ -83,31 +84,28 @@
         return sep;
     }
 
-    // ---------- 创建加载更多按钮 ----------
     function createLoadMoreButton(visibleCount, totalCount) {
         var container = document.createElement('div');
         container.className = 'badge-load-more';
         var remaining = Math.max(0, totalCount - DISPLAY_LIMIT);
         var btn = document.createElement('button');
         btn.className = 'badge-load-more__btn';
-        btn.textContent = showAllBadges ?
-            '收起' :
+        btn.textContent = showAllBadges ? '收起' :
             (remaining > 0 ? '加载更多（还剩 ' + remaining + ' 个徽章）' : '收起');
-
-        btn.addEventListener('click', function() {
-            showAllBadges = !showAllBadges;
-            updateBadgeUI();
-        });
-
+        btn.addEventListener('click', function() { showAllBadges = !showAllBadges; updateBadgeUI(); });
         container.appendChild(btn);
         return container;
     }
 
     // ---------- 初始化 ----------
-    function initBadgeUI(badgeListElement, totalScoreElement, currentScoreElement) {
+    function initBadgeUI(badgeListElement, totalScoreElement, currentScoreElement, rollCountElement, bestRollNumElement, bestRollTPElement, bestRollBoxElement) {
         badgeListEl = badgeListElement;
         totalScoreSpan = totalScoreElement;
         currentScoreSpan = currentScoreElement || null;
+        rollCountSpan = rollCountElement || null;
+        bestRollNumSpan = bestRollNumElement || null;
+        bestRollTPSpan = bestRollTPElement || null;
+        bestRollBox = bestRollBoxElement || null;
         loadFromStorage();
         updateBadgeUI();
     }
@@ -115,52 +113,55 @@
     // ---------- 更新 UI ----------
     function updateBadgeUI() {
         if (!badgeListEl || !totalScoreSpan) return;
-        totalScoreSpan.textContent = totalTP;
-        if (currentScoreSpan) {
-            currentScoreSpan.textContent = currentTP;
+
+        // 统计行
+        if (rollCountSpan) rollCountSpan.textContent = totalRolls.toLocaleString();
+        totalScoreSpan.textContent = totalTP.toLocaleString();
+        if (currentScoreSpan) currentScoreSpan.textContent = currentTP.toLocaleString();
+
+        // 最佳
+        if (bestRollBox && bestRollTP > 0) {
+            bestRollBox.style.display = '';
+            if (bestRollNumSpan) bestRollNumSpan.textContent = bestRollNum;
+            if (bestRollTPSpan) bestRollTPSpan.textContent = '+' + bestRollTP.toLocaleString() + 'TP';
+        } else if (bestRollBox) {
+            bestRollBox.style.display = 'none';
         }
+
+        // 徽章列表
         badgeListEl.innerHTML = '';
 
         var defs = window.BadgeDefs || [];
         var hasCurrentNumber = currentNumberStr && currentNumberStr.length > 0;
 
-        // 按稀有度排序
         var sorted = earnedBadges.slice().sort(function(a, b) {
             return rarityRank(a.rarity) - rarityRank(b.rarity);
         });
 
-        // 分离本轮新获得和旧徽章
-        var newBadges = [];
-        var oldBadges = [];
+        var newBadges = [], oldBadges = [];
         sorted.forEach(function(badge) {
-            if (newBadgeIds.hasOwnProperty(badge.id)) {
-                newBadges.push(badge);
-            } else {
-                oldBadges.push(badge);
-            }
+            if (newBadgeIds.hasOwnProperty(badge.id)) newBadges.push(badge);
+            else oldBadges.push(badge);
         });
 
         function isActiveBadge(badge) {
             if (!hasCurrentNumber) return false;
-            var def = null;
             for (var i = 0; i < defs.length; i++) {
-                if (defs[i].id === badge.id) { def = defs[i]; break; }
+                if (defs[i].id === badge.id) {
+                    try { return defs[i].check(currentNumberStr); } catch(e) { return false; }
+                }
             }
-            if (!def) return false;
-            try { return def.check(currentNumberStr); } catch(e) { return false; }
+            return false;
         }
 
         var showAll = showAllBadges;
         var newLimit = Math.min(newBadges.length, DISPLAY_LIMIT);
         var oldLimit = showAll ? oldBadges.length : Math.min(oldBadges.length, Math.max(0, DISPLAY_LIMIT - newLimit));
 
-        // ---- 渲染新徽章区域 ----
         if (newBadges.length > 0) {
             badgeListEl.appendChild(createSeparator('\u2728 \u65b0\u83b7\u5f97'));
             for (var ni = 0; ni < newLimit; ni++) {
-                badgeListEl.appendChild(
-                    createBadgePill(newBadges[ni], isActiveBadge(newBadges[ni]), true)
-                );
+                badgeListEl.appendChild(createBadgePill(newBadges[ni], isActiveBadge(newBadges[ni]), true));
             }
             if (!showAll && newBadges.length > newLimit) {
                 var nExtra = document.createElement('span');
@@ -170,19 +171,14 @@
             }
         }
 
-        // ---- 分隔 ----
         if (newBadges.length > 0 && oldBadges.length > 0) {
             badgeListEl.appendChild(createSeparator('\u5df2\u6536\u96c6'));
         }
 
-        // ---- 渲染旧徽章 ----
         for (var oi = 0; oi < oldLimit; oi++) {
-            badgeListEl.appendChild(
-                createBadgePill(oldBadges[oi], isActiveBadge(oldBadges[oi]), false)
-            );
+            badgeListEl.appendChild(createBadgePill(oldBadges[oi], isActiveBadge(oldBadges[oi]), false));
         }
 
-        // ---- 加载更多按钮 ----
         var totalVisible = newLimit + oldLimit;
         var totalAll = newBadges.length + oldBadges.length;
         if (totalVisible < totalAll || showAll) {
@@ -196,35 +192,32 @@
         currentNumberStr = numberStr;
         currentTP = 0;
         showAllBadges = false;
+        totalRolls++;
         var newlyEarnedIds = [];
 
         var defs = window.BadgeDefs || [];
 
         for (var i = 0; i < defs.length; i++) {
             var def = defs[i];
-            var matched = false;
-            try { matched = def.check(numberStr); } catch(e) {}
+            if (!tryCheck(def, numberStr)) continue;
 
-            if (matched) {
-                currentTP += def.score;
-
-                var existing = null;
-                for (var j = 0; j < earnedBadges.length; j++) {
-                    if (earnedBadges[j].id === def.id) { existing = earnedBadges[j]; break; }
-                }
-
-                if (existing) {
-                    existing.count += 1;
-                    totalTP += def.score;
-                } else {
-                    earnedBadges.push({
-                        id: def.id, name: def.name, emoji: def.emoji,
-                        score: def.score, rarity: def.rarity, count: 1
-                    });
-                    totalTP += def.score;
-                    newlyEarnedIds.push(def.id);
-                }
+            currentTP += def.score;
+            var existing = findBadge(def.id);
+            if (existing) {
+                existing.count++;
+                totalTP += def.score;
+            } else {
+                earnedBadges.push({ id: def.id, name: def.name, emoji: def.emoji,
+                    score: def.score, rarity: def.rarity, count: 1 });
+                totalTP += def.score;
+                newlyEarnedIds.push(def.id);
             }
+        }
+
+        // 更新最佳
+        if (currentTP > bestRollTP) {
+            bestRollTP = currentTP;
+            bestRollNum = numberStr;
         }
 
         for (var k = 0; k < newlyEarnedIds.length; k++) {
@@ -235,19 +228,26 @@
         saveToStorage();
     }
 
-    // ---------- 重置 ----------
-    function resetBadges() {
-        earnedBadges = [];
-        totalTP = 0;
-        currentTP = 0;
-        currentNumberStr = '';
-        newBadgeIds = {};
-        showAllBadges = false;
-        saveToStorage();
-        updateBadgeUI();
+    function tryCheck(def, num) {
+        try { return def.check(num); } catch(e) { return false; }
     }
 
-    // ---------- 暴露接口 ----------
+    function findBadge(id) {
+        for (var i = 0; i < earnedBadges.length; i++) {
+            if (earnedBadges[i].id === id) return earnedBadges[i];
+        }
+        return null;
+    }
+
+    // ---------- 重置 ----------
+    function resetBadges() {
+        earnedBadges = []; totalTP = 0; currentTP = 0;
+        currentNumberStr = ''; newBadgeIds = {}; showAllBadges = false;
+        totalRolls = 0; bestRollNum = ''; bestRollTP = 0;
+        saveToStorage(); updateBadgeUI();
+    }
+
+    // ---------- 暴露 ----------
     window.Badges = {
         initBadgeUI: initBadgeUI,
         checkAndAwardBadges: checkAndAwardBadges,

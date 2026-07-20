@@ -22,8 +22,12 @@
         const badgeList = document.getElementById('badgeList');
         const currentScoreSpan = document.getElementById('currentScore');
         const totalScoreSpan = document.getElementById('totalScore');
+        const rollCountSpan = document.getElementById('rollCount');
+        const bestRollNumSpan = document.getElementById('bestRollNum');
+        const bestRollTPSpan = document.getElementById('bestRollTP');
+        const bestRollBox = document.getElementById('bestRollBox');
         if (window.Badges && typeof window.Badges.initBadgeUI === 'function') {
-            window.Badges.initBadgeUI(badgeList, totalScoreSpan, currentScoreSpan);
+            window.Badges.initBadgeUI(badgeList, totalScoreSpan, currentScoreSpan, rollCountSpan, bestRollNumSpan, bestRollTPSpan, bestRollBox);
         } else {
             console.warn('Badges module not loaded properly.');
         }
