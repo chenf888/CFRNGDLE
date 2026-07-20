@@ -915,7 +915,7 @@
     { id: 'armstrong',       name: '自幂数',       emoji: '🌼',  score: 50000000, rarity: '超越', check: function(d){return U.isArmstrong(d);} },
     { id: 'factorial',       name: '阶乘',         emoji: '❗',  score: 50000000, rarity: '超越', check: function(d){var n=int(d);for(var i=2,p=1;p<=n;i++){p*=i;if(p===n&&n>1)return true;}return false;} },
     { id: 'taxicab',         name: '的士数',       emoji: '🚕',  score: 100000, rarity: '传说', check: function(d){var n=int(d);var ways=0;var limit=Math.ceil(Math.cbrt(n));for(var a=1;a<=limit;a++){for(var b=a;b<=limit;b++){if(a*a*a+b*b*b===n)ways++;if(ways>=2)return true;}}return false;} },
-    { id: 'exact-3-factors', name: '三相数',       emoji: '🔺',  score: 10000, rarity: '史诗', check: function(d){return U.hasExact3PrimeFactors(d);} },
+    { id: 'exact-3-factors', name: '三项数',       emoji: '🔺',  score: 200, rarity: '罕见', check: function(d){return U.hasExact3PrimeFactors(d);} },
     { id: 'quadruple-prime', name: '四生素数',     emoji: '👶',  score: 50000, rarity: '史诗', check: function(d){return U.isQuadruplePrime(d);} },
     { id: 'prime-reversible',name: '正反皆尊',     emoji: '💍',  score: 1000, rarity: '稀有', check: function(d){return U.isPrimeReversible(d);} },
     { id: 'div-by-40000',    name: '战锤40k',      emoji: '🔨',  score: 10000, rarity: '史诗', check: function(d){return U.isDivisibleBy40000(d);} },
