@@ -254,6 +254,19 @@
         resetBadges: resetBadges,
         getEarnedBadges: function() { return earnedBadges.slice(); },
         getTotalTP: function() { return totalTP; },
-        getCurrentTP: function() { return currentTP; }
+        getCurrentTP: function() { return currentTP; },
+        getCurrentNumberStr: function() { return currentNumberStr; },
+        getCurrentActiveBadges: function() {
+            if (!currentNumberStr) return [];
+            var defs = window.BadgeDefs || [];
+            return earnedBadges.filter(function(badge) {
+                for (var i = 0; i < defs.length; i++) {
+                    if (defs[i].id === badge.id) {
+                        try { return defs[i].check(currentNumberStr); } catch(e) { return false; }
+                    }
+                }
+                return false;
+            });
+        }
     };
 })();

@@ -34,6 +34,107 @@
     --rarity-终结: #f87171;
 }
 
+/* ===== 亮色主题变量 ===== */
+html[data-theme="light"] {
+    --background: #f1f1f1;
+    --surface: #ffffff;
+    --surface-raised: #f5f5f5;
+    --surface-dim: #e8e8e8;
+    --outline: #d4d4d4;
+    --outline-strong: #a0a0a0;
+    --prose: #1a1a1a;
+    --prose-2: #5a5a5a;
+    --prose-3: #999999;
+}
+
+html[data-theme="light"] body {
+    background-image:
+        radial-gradient(ellipse at 50% 90%, rgba(0, 0, 0, 0.03) 0%, transparent 65%),
+        radial-gradient(ellipse at 30% 20%, rgba(0, 0, 0, 0.02) 0%, transparent 50%);
+}
+
+html[data-theme="light"] .title {
+    background: linear-gradient(135deg, #1a1a1a 40%, #555 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 30px rgba(0, 0, 0, 0.04));
+}
+
+html[data-theme="light"] .number-card {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(0, 0, 0, 0.04);
+}
+
+html[data-theme="light"] .number-card::before {
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.02) 0%, transparent 100%);
+}
+
+html[data-theme="light"] .number-card::after {
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.01) 0%, transparent 100%);
+}
+
+html[data-theme="light"] .number-card--glow {
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.06), inset 0 0 40px rgba(0, 0, 0, 0.02);
+}
+
+html[data-theme="light"] .digit--active {
+    text-shadow: 0 0 20px rgba(0, 0, 0, 0.06);
+}
+
+html[data-theme="light"] .digit--revealed {
+    text-shadow: 0 0 12px rgba(0, 0, 0, 0.03);
+}
+
+html[data-theme="light"] .btn-generate {
+    background: linear-gradient(180deg, #f0f0f0 0%, #e0e0e0 100%);
+    color: #1a1a1a;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+html[data-theme="light"] .btn-generate::before {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, transparent 60%);
+}
+
+html[data-theme="light"] .btn-generate:hover:not(:disabled) {
+    background: linear-gradient(180deg, #e8e8e8 0%, #d4d4d4 100%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+html[data-theme="light"] .btn-generate .btn__spinner {
+    border-color: rgba(0, 0, 0, 0.12);
+    border-top-color: #1a1a1a;
+}
+
+html[data-theme="light"] .badge-score-stats {
+    box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.03);
+}
+
+html[data-theme="light"] .badge-pill {
+    box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.03);
+    background-image: radial-gradient(circle at 30% 30%, rgba(0, 0, 0, 0.03) 0%, transparent 70%);
+}
+
+html[data-theme="light"] .badge-pill:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="light"] #bestRollBox {
+    background: rgba(96, 165, 250, 0.08);
+    border-color: rgba(96, 165, 250, 0.3);
+}
+
+html[data-theme="light"] .header-actions button {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+html[data-theme="light"] .header-actions button:hover {
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="light"] .btn-share:hover {
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.06);
+}
+
 html {
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
@@ -61,6 +162,163 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 28px;
+    position: relative;
+}
+
+/* ===== Toast 提示 ===== */
+.toast {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-80px);
+    background: var(--surface-raised);
+    color: var(--prose);
+    border: 1px solid var(--outline);
+    border-radius: 12px;
+    padding: 10px 24px;
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 999;
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.toast--show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+html[data-theme="light"] .toast {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* ===== 右上角按钮组 ===== */
+.header-actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.header-actions button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--outline);
+    background: var(--surface);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--prose-2);
+}
+
+.header-actions button:hover {
+    border-color: var(--outline-strong);
+    transform: scale(1.08);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.06);
+    color: var(--prose);
+}
+
+.header-actions button:active {
+    transform: scale(0.92);
+}
+
+/* ---- 主题切换：线条太阳（暗色主题下显示） ---- */
+.theme-toggle::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 13px;
+    height: 13px;
+    margin: -7px 0 0 -7px;
+    border: 1.5px solid var(--prose-2);
+    border-radius: 50%;
+    background: transparent;
+    transition: all 0.35s ease;
+}
+
+.theme-toggle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 3px;
+    height: 3px;
+    margin: -1.5px 0 0 -1.5px;
+    background: var(--prose-2);
+    border-radius: 50%;
+    transition: all 0.35s ease;
+    /* 8 个射线端点 */
+    box-shadow:
+        0 -7px 0 0 var(--prose-2),
+        0 7px 0 0 var(--prose-2),
+        -7px 0 0 0 var(--prose-2),
+        7px 0 0 0 var(--prose-2),
+        -5px -5px 0 0 var(--prose-2),
+        5px -5px 0 0 var(--prose-2),
+        -5px 5px 0 0 var(--prose-2),
+        5px 5px 0 0 var(--prose-2);
+}
+
+/* ---- 主题切换：线条月亮（亮色主题下显示） ---- */
+html[data-theme="light"] .theme-toggle::before {
+    width: 13px;
+    height: 13px;
+    margin: -7px 0 0 -7px;
+    border: 1.5px solid var(--prose-2);
+    background: transparent;
+    box-shadow: none;
+}
+
+html[data-theme="light"] .theme-toggle::after {
+    /* 覆盖圆制造月牙 */
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    margin: -5.5px 0 0 -1px;
+    background: var(--surface);
+    border-radius: 50%;
+    box-shadow: none;
+    transition: all 0.35s ease;
+}
+
+/* ---- 按钮内 SVG 图标通用样式 ---- */
+.header-actions button svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 1.8;
+}
+
+/* ---- 自动按钮：播放/暂停切换 ---- */
+.auto-icon-pause {
+    display: none;
+}
+
+/* 播放三角图标视觉修正 — 三角形状天生偏左下 */
+.btn-auto .auto-icon-play {
+    transform: translate(1px, 1px);
+}
+
+.btn-auto.is-running .auto-icon-play {
+    display: none;
+}
+
+.btn-auto.is-running .auto-icon-pause {
+    display: inline-flex;
 }
 
 /* ===== 标题 ===== */
@@ -308,6 +566,58 @@ body {
     color: var(--prose);
     font-weight: 900;
     font-size: 0.9rem;
+}
+
+/* ---- 分享按钮 ---- */
+.btn-share {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    font-family: var(--font-ui);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--prose-2);
+    transition: all 0.2s ease;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.btn-share:hover {
+    color: var(--prose);
+    border-color: var(--outline-strong);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.04);
+}
+
+.btn-share:active {
+    transform: scale(0.95);
+}
+
+.btn-share svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2;
+}
+
+.btn-share .share-check {
+    display: none;
+}
+
+/* 复制成功 → 显示对勾 */
+.btn-share.is-copied .share-icon,
+.btn-share.is-copied .share-text {
+    display: none;
+}
+
+.btn-share.is-copied .share-check {
+    display: inline-flex;
+}
+
+.btn-share.is-copied {
+    color: #34d399;
+    border-color: #34d399;
+    pointer-events: none;
 }
 
 #currentScore {

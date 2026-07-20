@@ -3,6 +3,7 @@
     'use strict';
 
     document.addEventListener('DOMContentLoaded', function() {
+
         // ---------- 检查必要元素 ----------
         const container = document.getElementById('digitsContainer');
         if (!container) {
@@ -177,5 +178,171 @@
         // 初始加载后自动生成一次
         resetDigits();
         setTimeout(handleGenerate, 1000);
+
+        // ========== 主题切换 ==========
+        (function initTheme() {
+            var STORAGE_KEY = 'cfrngdle_theme';
+            var saved = localStorage.getItem(STORAGE_KEY) || 'dark';
+            document.documentElement.setAttribute('data-theme', saved);
+            var themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    var current = document.documentElement.getAttribute('data-theme');
+                    var next = current === 'light' ? 'dark' : 'light';
+                    document.documentElement.setAttribute('data-theme', next);
+                    localStorage.setItem(STORAGE_KEY, next);
+                });
+            }
+        })();
+
+        // ========== 重置按钮 ==========
+        (function initReset() {
+            var resetBtn = document.getElementById('resetBtn');
+            if (!resetBtn) return;
+            resetBtn.addEventListener('click', function() {
+                if (!confirm('确定要清除所有本地数据吗？此操作不可撤销。')) return;
+                if (window.Badges && typeof window.Badges.resetBadges === 'function') {
+                    window.Badges.resetBadges();
+                }
+                resetDigits();
+                card.classList.remove('number-card--glow');
+                card.style.borderColor = '';
+            });
+        })();
+
+        // ========== 自动随机按钮 ==========
+        (function initAuto() {
+            var autoBtn = document.getElementById('autoBtn');
+            if (!autoBtn) return;
+            var autoRunning = false;
+            var autoTimer = null;
+            var AUTO_INTERVAL = 3000; // 3 秒
+
+            autoBtn.addEventListener('click', function() {
+                if (autoRunning) {
+                    // 停止
+                    autoRunning = false;
+                    autoBtn.classList.remove('is-running');
+                    if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+                } else {
+                    // 启动
+                    autoRunning = true;
+                    autoBtn.classList.add('is-running');
+                    // 立刻执行一次
+                    if (!isGenerating) handleGenerate();
+                    autoTimer = setInterval(function() {
+                        if (!isGenerating) handleGenerate();
+                    }, AUTO_INTERVAL);
+                }
+            });
+        })();
+
+        // ========== 分享按钮 ==========
+        (function initShare() {
+            var shareBtn = document.getElementById('shareBtn');
+            if (!shareBtn) return;
+
+            var RARITY_EMOJI = {
+                '终结': '\uD83D\uDFE5',   // 🟥
+                '超越': '\uD83D\uDD35',   // 🔵
+                '神话': '\uD83D\uDFE2',   // 🟢
+                '传说': '🩷',             // 🩷
+                '史诗': '\uD83D\uDFE8',   // 🟨
+                '稀有': '\uD83D\uDFE3',   // 🟣
+                '罕见': '\uD83D\uDFE6',   // 🟦
+                '普通': '\uD83D\uDFE9',   // 🟩
+                '平庸': '\u2B1C'          // ⬜
+            };
+
+            var RARITY_ORDER = ['终结','超越','神话','传说','史诗','稀有','罕见','普通','平庸'];
+
+            function rarityRank(r) {
+                var idx = RARITY_ORDER.indexOf(r);
+                return idx === -1 ? RARITY_ORDER.length : idx;
+            }
+
+            function buildShareText() {
+                var num = window.Badges && window.Badges.getCurrentNumberStr ? window.Badges.getCurrentNumberStr() : '';
+                var tp = window.Badges && window.Badges.getCurrentTP ? window.Badges.getCurrentTP() : 0;
+                var badges = window.Badges && window.Badges.getCurrentActiveBadges ? window.Badges.getCurrentActiveBadges().slice() : [];
+
+                // 按稀有度排序（最稀有在前）
+                badges.sort(function(a, b) { return rarityRank(a.rarity) - rarityRank(b.rarity); });
+
+                var top4 = badges.slice(0, 4);
+                var more = Math.max(0, badges.length - 4);
+
+                var lines = [];
+                lines.push('CFRNGDLE');
+                lines.push('\uD83C\uDFB2' + num);  // 🎲 + number
+                lines.push('');
+
+                for (var i = 0; i < top4.length; i++) {
+                    var b = top4[i];
+                    var emoji = RARITY_EMOJI[b.rarity] || '⬜';
+                    lines.push(emoji + ' ' + b.emoji + ' ' + b.name);
+                }
+
+                if (more > 0) {
+                    lines.push('+' + more + ' more');
+                }
+
+                lines.push('');
+                lines.push(tp.toLocaleString() + ' TP');
+                lines.push('https://chenf888.github.io/CFRNGDLE/');
+
+                return lines.join('\n');
+            }
+
+            var copiedTimer = null;
+
+            shareBtn.addEventListener('click', function() {
+                if (shareBtn.classList.contains('is-copied')) return;
+
+                var text = buildShareText();
+
+                // 复制到剪贴板
+                var copied = false;
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(function() {
+                        copied = true;
+                        showSuccess();
+                    }).catch(function() {
+                        fallbackCopy(text);
+                    });
+                } else {
+                    fallbackCopy(text);
+                }
+
+                function fallbackCopy(t) {
+                    var ta = document.createElement('textarea');
+                    ta.value = t;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    try {
+                        document.execCommand('copy');
+                        copied = true;
+                    } catch(e) {}
+                    document.body.removeChild(ta);
+                    if (copied) showSuccess();
+                }
+
+                function showSuccess() {
+                    shareBtn.classList.add('is-copied');
+                    // Toast 提示
+                    var toast = document.getElementById('toast');
+                    if (toast) {
+                        toast.classList.add('toast--show');
+                        setTimeout(function() { toast.classList.remove('toast--show'); }, 1800);
+                    }
+                    if (copiedTimer) clearTimeout(copiedTimer);
+                    copiedTimer = setTimeout(function() {
+                        shareBtn.classList.remove('is-copied');
+                    }, 2000);
+                }
+            });
+        })();
     });
 })();
