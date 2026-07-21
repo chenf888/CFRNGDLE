@@ -841,7 +841,7 @@
     { id: 'meme-408',    name: '蜂王',       emoji: '🐝',  score: 111, rarity: '普通', check: function(d){return U.hasSubstring(d,'408');} },
     { id: 'meme-325',    name: '这也言周',   emoji: 'Zc',  score: 111, rarity: '普通', check: function(d){return U.hasSubstring(d,'325');} },
     { id: 'meme-512',    name: '纯矿精华',   emoji: '❇️',  score: 111, rarity: '普通', check: function(d){return U.hasSubstring(d,'512');} },
-    { id: 'meme-985211', name: '做题家',     emoji: '📓',  score: 166667, rarity: '传说', check: function(d){return U.hasSubstring(d,'985211') || U.hasSubstring(d,'211');} },
+    { id: 'meme-985211', name: '做题家',     emoji: '📓',  score: 16667, rarity: '史诗', check: function(d){return U.hasSubstring(d,'985211') || U.hasSubstring(d,'211');} },
 
     // -- 新子串（4位）--
     { id: 'meme-4242',   name: '深邃意义',   emoji: '🌟',  score: 1260, rarity: '罕见', check: function(d){return U.hasSubstring(d,'4242');} },
@@ -917,7 +917,7 @@
     { id: 'exact-3-factors', name: '三项数',       emoji: '🔺',  score: 3, rarity: '平庸', check: function(d){return U.hasExact3PrimeFactors(d);} },
     { id: 'quadruple-prime', name: '四生素数',     emoji: '👶',  score: 1000000000, rarity: '史诗', check: function(d){return U.isQuadruplePrime(d);} },
     { id: 'prime-reversible',name: '正反皆尊',     emoji: '💍',  score: 286, rarity: '罕见', check: function(d){return U.isPrimeReversible(d);} },
-    { id: 'div-by-40000',    name: '战锤40k',      emoji: '🔨',  score: 1000000000, rarity: '史诗', check: function(d){return U.isDivisibleBy40000(d);} },
+    { id: 'div-by-40000',    name: '战锤40k',      emoji: '🔨',  score: 100000, rarity: '史诗', check: function(d){return U.isDivisibleBy40000(d);} },
 
     // ═══════════════════════════════════════════════
     // 二十三、新模式徽章
@@ -1147,7 +1147,7 @@
 
     // -- 打乱连续数补全（5, 8~11） --
     { id: 'scrambled-5',  name: '打乱五连',  emoji: '🔀5️⃣', score: 25, rarity: '罕见', check: function(d){return U.hasScrambledConsecutive(d,5);} },
-    { id: 'scrambled-8',  name: '打乱八连',  emoji: '🔀8️⃣', score: 200, rarity: '史诗', check: function(d){return U.hasScrambledConsecutive(d,8);} },
+    { id: 'scrambled-8',  name: '打乱八连',  emoji: '🔀8️⃣', score: 2000, rarity: '史诗', check: function(d){return U.hasScrambledConsecutive(d,8);} },
     { id: 'scrambled-9',  name: '打乱九连',  emoji: '🔀9️⃣', score: 50000, rarity: '传说', check: function(d){return U.hasScrambledConsecutive(d,9);} },
     { id: 'scrambled-10', name: '打乱十连',  emoji: '🔀🔟', score: 100000, rarity: '神话', check: function(d){return U.hasScrambledConsecutive(d,10);} },
     { id: 'scrambled-11', name: '打乱全连',  emoji: '🔀☯', score: 1000000, rarity: '超越', check: function(d){return U.hasScrambledConsecutive(d,11);} },
