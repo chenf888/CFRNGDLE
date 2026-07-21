@@ -841,7 +841,7 @@
     { id: 'meme-408',    name: '蜂王',       emoji: '🐝',  score: 111, rarity: '普通', check: function(d){return U.hasSubstring(d,'408');} },
     { id: 'meme-325',    name: '这也言周',   emoji: 'Zc',  score: 111, rarity: '普通', check: function(d){return U.hasSubstring(d,'325');} },
     { id: 'meme-512',    name: '纯矿精华',   emoji: '❇️',  score: 111, rarity: '普通', check: function(d){return U.hasSubstring(d,'512');} },
-    { id: 'meme-985211', name: '做题家',     emoji: '📓',  score: 166667, rarity: '传说', check: function(d){return U.hasSubstring(d,'985') || U.hasSubstring(d,'211');} },
+    { id: 'meme-985211', name: '做题家',     emoji: '📓',  score: 166667, rarity: '传说', check: function(d){return U.hasSubstring(d,'985211') || U.hasSubstring(d,'211');} },
 
     // -- 新子串（4位）--
     { id: 'meme-4242',   name: '深邃意义',   emoji: '🌟',  score: 1260, rarity: '罕见', check: function(d){return U.hasSubstring(d,'4242');} },
