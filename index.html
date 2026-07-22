@@ -47,6 +47,10 @@
                     <span class="share-text">分享</span>
                     <svg class="share-check" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
                 </button>
+                <div class="badge-score-stats" id="toggleActiveBtn" style="cursor:pointer;user-select:none">
+                    <span class="badge-score-label">仅当前</span>
+                    <span class="badge-score-value" id="toggleActiveValue">全部</span>
+                </div>
                 <div class="badge-score-stats">
                     <span class="badge-score-label">总次数</span>
                     <span class="badge-score-value" id="rollCount">0</span>
@@ -59,10 +63,10 @@
                     <span class="badge-score-label">总 TP</span>
                     <span class="badge-score-value" id="totalScore">0</span>
                 </div>
-                <div class="badge-score-stats" id="bestRollBox" style="display:none">
+                <div class="badge-score-stats" id="bestRollBox">
                     <span class="badge-score-label">最佳</span>
-                    <span class="badge-score-best-num" id="bestRollNum"></span>
-                    <span class="badge-score-best-tp" id="bestRollTP"></span>
+                    <span class="badge-score-best-num" id="bestRollNum">—</span>
+                    <span class="badge-score-best-tp" id="bestRollTP">0TP</span>
                 </div>
             </div>
             <div class="badge-list" id="badgeList"></div>

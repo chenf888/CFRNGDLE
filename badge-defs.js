@@ -834,24 +834,19 @@
     // 二十、7位系统迁移徽章（子串/文化梗类）
     // ═══════════════════════════════════════════════
 
-    // -- 新子串（2-3位）--
     { id: 'meme-7734',   name: '地狱',       emoji: '🔥',  score: 1250, rarity: '罕见', check: function(d){return U.hasSubstring(d,'7734');} },
     { id: 'meme-4399',   name: '童年回忆',   emoji: '🎮',  score: 1250, rarity: '罕见', check: function(d){return U.hasSubstring(d,'4399');} },
     { id: 'meme-0721',   name: '绫地宁宁',   emoji: '🥛',  score: 1250, rarity: '罕见', check: function(d){return U.hasSubstring(d,'0721');} },
     { id: 'meme-408',    name: '蜂王',       emoji: '🐝',  score: 111, rarity: '普通', check: function(d){return U.hasSubstring(d,'408');} },
     { id: 'meme-325',    name: '这也言周',   emoji: 'Zc',  score: 111, rarity: '普通', check: function(d){return U.hasSubstring(d,'325');} },
     { id: 'meme-512',    name: '纯矿精华',   emoji: '❇️',  score: 111, rarity: '普通', check: function(d){return U.hasSubstring(d,'512');} },
-    { id: 'meme-985211', name: '做题家',     emoji: '📓',  score: 16667, rarity: '史诗', check: function(d){return U.hasSubstring(d,'985211') || U.hasSubstring(d,'211');} },
-
-    // -- 新子串（4位）--
+    { id: 'meme-985211', name: '做题家',     emoji: '📓',  score: 16667, rarity: '史诗', check: function(d){return U.hasSubstring(d,'985211');} },
     { id: 'meme-4242',   name: '深邃意义',   emoji: '🌟',  score: 1260, rarity: '罕见', check: function(d){return U.hasSubstring(d,'4242');} },
     { id: 'meme-6969',   name: 'Very Nice',  emoji: '😏',  score: 1260, rarity: '罕见', check: function(d){return U.hasSubstring(d,'6969');} },
     { id: 'meme-6767',   name: '双六-七',    emoji: '🫠',  score: 1260, rarity: '罕见', check: function(d){return U.hasSubstring(d,'6767');} },
     { id: 'meme-07734',  name: 'HELLO',      emoji: '👋',  score: 14286, rarity: '罕见', check: function(d){return U.hasSubstring(d,'07734');} },
     { id: 'meme-24678',  name: '连续数鸭子', emoji: '🦆',  score: 14286, rarity: '罕见', check: function(d){return U.hasSubstring(d,'24678');} },
     { id: 'meme-299792', name: '光速',       emoji: '🔦',  score: 166667, rarity: '史诗', check: function(d){return U.hasSubstring(d,'299792') || U.hasSubstring(d,'300000');} },
-
-    // -- 新子串（5-6位重彩）--
     { id: 'meme-424242',   name: '宇宙答案',   emoji: '🌟',  score: 167785, rarity: '稀有', check: function(d){return U.hasSubstring(d,'424242');} },
     { id: 'meme-696969',   name: 'VeryVeryNice',emoji:'😏',  score: 167785, rarity: '稀有', check: function(d){return U.hasSubstring(d,'696969');} },
     { id: 'meme-676767',   name: '脑腐',       emoji: '🫠',  score: 167785, rarity: '稀有', check: function(d){return U.hasSubstring(d,'676767');} },
@@ -869,25 +864,21 @@
     // ═══════════════════════════════════════════════
     // 二十一、精确值徽章（有效位数匹配）
     // ═══════════════════════════════════════════════
-
-    // -- 7位精确值 --
-    { id: 'exact-7777777', name: '宇宙头奖',   emoji: '💰', score: 1000000000, rarity: '终结', check: function(d){return U.getEffectiveLength(d)===7 && int(d)===7777777;} },
-    { id: 'exact-1919810',name: '野兽先辈',   emoji: '💩', score: 1000000000, rarity: '终结', check: function(d){return U.getEffectiveLength(d)===7 && int(d)===1919810;} },
-    { id: 'exact-3141592',name: '七位圆周率', emoji: '🥧', score: 1000000000, rarity: '终结', check: function(d){return U.getEffectiveLength(d)===7 && int(d)===3141592;} },
-    { id: 'exact-2718281',name: '七位欧拉常数',emoji:'📈',score: 1000000000, rarity: '终结', check: function(d){return U.getEffectiveLength(d)===7 && int(d)===2718281;} },
-    { id: 'exact-1314520',name: '永恒之爱',   emoji: '❤',  score: 1000000000, rarity: '超越', check: function(d){return (U.getEffectiveLength(d)===7&&int(d)===1314520) || (U.getEffectiveLength(d)===7&&int(d)===5201314);} },
-    { id: 'exact-stars',  name: '小星星',     emoji: '🌟',  score: 1000000000, rarity: '超越', check: function(d){var n=int(d);var l=U.getEffectiveLength(d);return l===7&&(n===1155665||n===4433221||n===5544332);} },
-
-    // -- 6位精确值 --
-    { id: 'exact-666666', name: 'DoctorSoap', emoji: '🎲', score: 100000000, rarity: '超越', check: function(d){return U.getEffectiveLength(d)===6 && int(d)===666666;} },
+    { id: 'exact-7777777', name: '宇宙头奖',   emoji: '💰', score: 100000000, rarity: '超越', check: function(d){return U.getEffectiveLength(d)===7 && int(d)===7777777;} },
+    { id: 'exact-1919810',name: '野兽先辈',   emoji: '💩', score: 100000000, rarity: '超越', check: function(d){return U.getEffectiveLength(d)===7 && int(d)===1919810;} },
+    { id: 'exact-3141592',name: '七位圆周率', emoji: '🥧', score: 100000000, rarity: '超越', check: function(d){return U.getEffectiveLength(d)===7 && int(d)===3141592;} },
+    { id: 'exact-2718281',name: '七位欧拉常数',emoji:'📈',score: 100000000, rarity: '超越', check: function(d){return U.getEffectiveLength(d)===7 && int(d)===2718281;} },
+    { id: 'exact-1314520',name: '永恒之爱',   emoji: '❤',  score: 10000000, rarity: '超越', check: function(d){return (U.getEffectiveLength(d)===7&&int(d)===1314520) || (U.getEffectiveLength(d)===7&&int(d)===5201314);} },
+    { id: 'exact-stars',  name: '小星星',     emoji: '🌟',  score: 10000000, rarity: '超越', check: function(d){var n=int(d);var l=U.getEffectiveLength(d);return l===7&&(n===1155665||n===4433221||n===5544332);} },
+    { id: 'exact-666666', name: 'DoctorSoap', emoji: '🎲', score: 10000000, rarity: '超越', check: function(d){return U.getEffectiveLength(d)===6 && int(d)===666666;} },
 
     // -- 3-4位精准（文化/梗数字） --
-    { id: 'exact-777',    name: '精准之7',    emoji: '💰', score: 1000000, rarity: '史诗', check: function(d){return U.getEffectiveLength(d)===3 && int(d)===777;} },
-    { id: 'exact-666',    name: '精准恶魔',   emoji: '😈', score: 1000000, rarity: '史诗', check: function(d){return U.getEffectiveLength(d)===3 && int(d)===666;} },
+    { id: 'exact-777',    name: '精准之7',    emoji: '💰', score: 100000000, rarity: '超越', check: function(d){return U.getEffectiveLength(d)===3 && int(d)===777;} },
+    { id: 'exact-666',    name: '精准恶魔',   emoji: '😈', score: 100000000, rarity: '超越', check: function(d){return U.getEffectiveLength(d)===3 && int(d)===666;} },
     { id: 'exact-1337',   name: '精准LEET',   emoji: '💻', score: 10000000, rarity: '传说', check: function(d){return U.getEffectiveLength(d)===4 && int(d)===1337;} },
     { id: 'exact-7734',   name: '精准地狱',   emoji: '👹', score: 10000000, rarity: '传说', check: function(d){return U.getEffectiveLength(d)===4 && int(d)===7734;} },
-    { id: 'exact-42',     name: '精准意义',   emoji: '🌟', score: 10000000, rarity: '传说', check: function(d){return U.getEffectiveLength(d)===2 && int(d)===42;} },
-    { id: 'exact-911',    name: '精准救援',   emoji: '🚑', score: 10000000, rarity: '传说', check: function(d){return U.getEffectiveLength(d)===3 && int(d)===911;} },
+    { id: 'exact-42',     name: '精准意义',   emoji: '🌟', score: 1000000000, rarity: '终极', check: function(d){return U.getEffectiveLength(d)===2 && int(d)===42;} },
+    { id: 'exact-911',    name: '精准救援',   emoji: '🚑', score: 100000000, rarity: '超越', check: function(d){return U.getEffectiveLength(d)===3 && int(d)===911;} },
 
     // ═══════════════════════════════════════════════
     // 二十二、数学性质徽章
@@ -925,8 +916,8 @@
 
     // -- 重复模式 --
     { id: 'rep-6',        name: '奇点',       emoji: '⬡',  score: 1000000, rarity: '传说', check: function(d){return U.maxConsecutiveSame(d)>=6;} },
-    { id: 'planet-asteroid',name:'定轨行星+小行星',emoji:'🌏',score: 1000000, rarity: '传说', check: function(d){return U.hasComboRun(d,4,3);} },
-    { id: 'star-asteroid', name: '定轨恒星+小行星',emoji:'☀️',score: 1000, rarity: '传说', check: function(d){return U.hasComboRun(d,5,2);} },
+    { id: 'planet-asteroid',name:'定轨行星+小行星',emoji:'🌏',score: 100000, rarity: '传说', check: function(d){return U.hasComboRun(d,4,3);} },
+    { id: 'star-asteroid', name: '定轨恒星+小行星',emoji:'☀️',score: 10000, rarity: '传说', check: function(d){return U.hasComboRun(d,5,2);} },
     { id: 'star',          name: '定轨恒星',   emoji: '☀️',  score: 500, rarity: '史诗', check: function(d){return U.maxConsecutiveSame(d)>=5;} },
     { id: 'planet-satellite',name:'定轨行星+卫星',emoji:'🌏',score: 222, rarity: '稀有', check: function(d){return U.hasComboRun(d,4,2);} },
     { id: 'three-satellites',name:'定轨三卫星',emoji: '🛰',  score: 3, rarity: '平庸', check: function(d){var f=U.countDigitFreq(d);var g=0;for(var i=0;i<10;i++){if(f[i]===2)g++;}return g>=3;} },
@@ -957,11 +948,11 @@
     { id: 'binary-alt',     name: '闪灯',      emoji: '✨',  score: 125, rarity: '罕见', check: function(d){return U.binaryAlternating(d,8);} },
 
     // -- 七段码 --
-    { id: 'cyber-harshad',  name: '赛博哈沙德数',emoji:'🤖',score: 69, rarity: '罕见', check: function(d){var seg=U.sevenSegmentSum(d);return seg>0 && int(d)%seg===0;} },
+    { id: 'cyber-harshad',  name: '赛博哈沙德数',emoji:'🤖',score: 69, rarity: '普通', check: function(d){var seg=U.sevenSegmentSum(d);return seg>0 && int(d)%seg===0;} },
 
     // -- 方差/极差 --
     { id: 'discrete',       name: '离散',      emoji: '🏁',  score: 1000, rarity: '罕见', check: function(d){return U.varianceDigits(d)>=15;} },
-    { id: 'compress',       name: '压缩',      emoji: '⩙',   score: 2000, rarity: '普通', check: function(d){return U.getEffectiveLength(d)>=3 && U.rangeDigits(d)<4;} },
+    { id: 'compress',       name: '压缩',      emoji: '⩙',   score: 2000, rarity: '罕见', check: function(d){return U.getEffectiveLength(d)>=3 && U.rangeDigits(d)<4;} },
     { id: 'decompress',     name: '解压缩',    emoji: '↕️',  score: 1, rarity: '平庸', check: function(d){return U.getEffectiveLength(d)>=3 && U.rangeDigits(d)>7;} },
 
     // -- 熵 --
@@ -996,14 +987,14 @@
     { id: 'neighbor',       name: '邻居',      emoji: '🏘️',  score: 1, rarity: '平庸', check: function(d){return U.hasNeighbor(d);} },
 
     // -- 等差数列分组 --
-    { id: 'arith-pairs',    name: '等差数列',  emoji: '⏫',  score: 1000000, rarity: '罕见', check: function(d){var t=d.replace(/^0+/,'')||'0';return t.length===6 && U.isTwoDigitArithProg(t);} },
+    { id: 'arith-pairs',    name: '等差数列',  emoji: '⏫',  score: 1000000, rarity: '传说', check: function(d){var t=d.replace(/^0+/,'')||'0';return t.length===6 && U.isTwoDigitArithProg(t);} },
 
     // -- 数鸭子 --
     { id: 'count-ducks',    name: '数鸭子',    emoji: '🦆',  score: 10, rarity: '普通', check: function(d){return U.containsAllDigits(d, [2,4,6,7,8]);} },
 
     // -- 闭锁/公开化 --
-    { id: 'locked',         name: '闭锁',      emoji: '🔒',  score: 2000, rarity: '普通', check: function(d){return U.onlyFrom(d, [4,6,8,9,0]);} },
-    { id: 'open-set',       name: '公开化',    emoji: '📂',  score: 2000, rarity: '普通', check: function(d){return U.onlyFrom(d, [1,2,3,5,7]);} },
+    { id: 'locked',         name: '闭锁',      emoji: '🔒',  score: 2000, rarity: '罕见', check: function(d){return U.onlyFrom(d, [4,6,8,9,0]);} },
+    { id: 'open-set',       name: '公开化',    emoji: '📂',  score: 2000, rarity: '罕见', check: function(d){return U.onlyFrom(d, [1,2,3,5,7]);} },
 
     // -- 循环节 --
     { id: 'reciprocal-7',   name: '七彩虹',    emoji: '🌈',  score: 1000000, rarity: '传说', check: function(d){return U.startsWithReciprocal7(d);} },
@@ -1016,7 +1007,7 @@
     { id: 'take-off',       name: '起飞',      emoji: '🚀',  score: 2, rarity: '平庸', check: function(d){return +d[0] > +d[d.length-1];} },
 
     // -- 博饼/专一 --
-    { id: 'gambling',       name: '博饼',      emoji: '🎲',  score: 11111, rarity: '普通', check: function(d){var el=U.getEffectiveLength(d);if(el!==6)return false;var t=d.substring(11-el);return U.onlyFrom(t, [1,2,3,4,5,6]);} },
+    { id: 'gambling',       name: '博饼',      emoji: '🎲',  score: 11111, rarity: '稀有', check: function(d){var el=U.getEffectiveLength(d);if(el!==6)return false;var t=d.substring(11-el);return U.onlyFrom(t, [1,2,3,4,5,6]);} },
     { id: 'dedicated',      name: '专一',      emoji: '🎲',  score: 11, rarity: '普通', check: function(d){var f=U.countDigitFreq(d);if(f[1]!==2)return false;for(var i=0;i<10;i++){if(i===1)continue;if(f[i]>2)return false;}return true;} },
 
     // -- Luhn --
@@ -1055,7 +1046,7 @@
     { id: 'mul-split',      name: '倍增',      emoji: '✖',   score: 3, rarity: '平庸', check: function(d){for(var i=1;i<d.length;i++){var a=int(d.substring(0,i)),b=int(d.substring(i));if(b>1&&a>0&&b%a===0&&a!==b)return true;}return false;} },
 
     // -- 张三来袭 --
-    { id: 'zhang-san',      name: '张三来袭',  emoji: '🔺',  score: 100000, rarity: '罕见', check: function(d){return U.onlyFrom(d, [0,3,6,9]);} },
+    { id: 'zhang-san',      name: '张三来袭',  emoji: '🔺',  score: 100000, rarity: '传说', check: function(d){return U.onlyFrom(d, [0,3,6,9]);} },
 
     // -- 恭喜栗子 --
     { id: 'congrats',       name: '恭喜栗子',  emoji: '🌰',  score: 4, rarity: '平庸', check: function(d){return U.containsAllDigits(d, [4,9,7]);} },
@@ -1066,7 +1057,7 @@
     // -- 顺序/乱序连数拆分 --
     { id: 'consec-2',       name: '顺序二连数',emoji: '⛓️',  score: 100, rarity: '稀有', check: function(d){return U.canSplit2Consec(d,8);} },
     { id: 'consec-3',       name: '顺序三连数',emoji: '⛓️',  score: 1000, rarity: '史诗', check: function(d){return U.canSplit3Consec(d,7);} },
-    { id: 'consec-4',       name: '顺序四连数',emoji: '⛓️',  score: 10000, rarity: '传说', check: function(d){return U.canSplit4Consec(d,6);} },
+    { id: 'consec-4',       name: '顺序四连数',emoji: '⛓️',  score: 10000, rarity: '稀有', check: function(d){return U.canSplit4Consec(d,6);} },
     { id: 'unordered-3',    name: '乱序三连数',emoji: '🔀',  score: 100, rarity: '稀有', check: function(d){return U.canSplit3Unordered(d,7);} },
     { id: 'unordered-4',    name: '乱序四连数',emoji: '🔀',  score: 1000, rarity: '史诗', check: function(d){return U.canSplit4Unordered(d,6);} },
 
@@ -1083,25 +1074,25 @@
     { id: 'chain-7',        name: '七数链',    emoji: '🔢',  score: 100000, rarity: '传说', check: function(d){return U.hasIncreasingRun(d,7)||U.hasDecreasingRun(d,7);} },
     { id: 'chain-6',        name: '六数链',    emoji: '🔢',  score: 10000, rarity: '罕见', check: function(d){return U.hasIncreasingRun(d,6)||U.hasDecreasingRun(d,6);} },
     { id: 'chain-5',        name: '五数链',    emoji: '📏',  score: 1000, rarity: '稀有', check: function(d){return U.hasIncreasingRun(d,5)||U.hasDecreasingRun(d,5);} },
-    { id: 'scrambled-7',    name: '七乱链',    emoji: '🔀',  score: 118, rarity: '传说', check: function(d){return U.hasScrambledConsecutive(d,7);} },
-    { id: 'scrambled-6',    name: '六乱链',    emoji: '🔀',  score: 57, rarity: '稀有', check: function(d){return U.hasScrambledConsecutive(d,6);} },
+    { id: 'scrambled-7',    name: '七乱链',    emoji: '🔀',  score: 118, rarity: '普通', check: function(d){return U.hasScrambledConsecutive(d,7);} },
+    { id: 'scrambled-6',    name: '六乱链',    emoji: '🔀',  score: 57, rarity: '普通', check: function(d){return U.hasScrambledConsecutive(d,6);} },
 
     // -- 极端和 --
     { id: 'dense',          name: '致密',      emoji: '◉',   score: 4, rarity: '平庸', check: function(d){return U.sumOfDigits(d)>55;} },
     { id: 'heavy',          name: '沉重',      emoji: '🧱',  score: 2, rarity: '平庸', check: function(d){return U.sumOfDigits(d)>45;} },
-    { id: 'light-feather',  name: '轻羽',      emoji: '🪶',  score: 2000, rarity: '普通', check: function(d){return U.sumOfDigits(d)<15;} },
+    { id: 'light-feather',  name: '轻羽',      emoji: '🪶',  score: 2000, rarity: '罕见', check: function(d){return U.sumOfDigits(d)<15;} },
 
     // -- 三七 --
-    { id: 'twenty-one',     name: '三七',      emoji: '🌿',  score: 2000, rarity: '普通', check: function(d){return U.sumOfDigits(d)===21;} },
+    { id: 'twenty-one',     name: '三七',      emoji: '🌿',  score: 2000, rarity: '罕见', check: function(d){return U.sumOfDigits(d)===21;} },
 
     // ═══════════════════════════════════════════════
     // 二十四、时间/日期徽章
     // ═══════════════════════════════════════════════
     { id: 'clock-hour',     name: '时针',      emoji: '🕛',  score: 91, rarity: '普通', check: function(d){var h=('0'+new Date().getHours()).slice(-2);return d.substring(0,2)===h;} },
-    { id: 'clock-minute',   name: '分针',      emoji: '🕛',  score: 167, rarity: '罕见', check: function(d){var m=('0'+new Date().getMinutes()).slice(-2);return d.substring(4,6)===m;} },
+    { id: 'clock-minute',   name: '分针',      emoji: '🕛',  score: 167, rarity: '普通', check: function(d){var m=('0'+new Date().getMinutes()).slice(-2);return d.substring(4,6)===m;} },
     { id: 'clock-second',   name: '秒针',      emoji: '🕛',  score: 77, rarity: '普通', check: function(d){var s=('0'+new Date().getSeconds()).slice(-2);return d.substring(9,11)===s;} },
-    { id: 'calendar-year',  name: '年历',      emoji: '📅',  score: 118, rarity: '罕见', check: function(d){var y=(''+new Date().getFullYear()).slice(-2);return d.substring(0,2)===y;} },
-    { id: 'calendar-month', name: '月历',      emoji: '📅',  score: 118, rarity: '罕见', check: function(d){var m=('0'+(new Date().getMonth()+1)).slice(-2);return d.substring(2,4)===m;} },
+    { id: 'calendar-year',  name: '年历',      emoji: '📅',  score: 118, rarity: '普通', check: function(d){var y=(''+new Date().getFullYear()).slice(-2);return d.substring(0,2)===y;} },
+    { id: 'calendar-month', name: '月历',      emoji: '📅',  score: 118, rarity: '普通', check: function(d){var m=('0'+(new Date().getMonth()+1)).slice(-2);return d.substring(2,4)===m;} },
     { id: 'calendar-day',   name: '日历',      emoji: '📅',  score: 91, rarity: '普通', check: function(d){var day=('0'+new Date().getDate()).slice(-2);return d.substring(4,6)===day;} },
     { id: 'perfect-time',   name: '完美时间',  emoji: '⏰',  score: 100000000, rarity: '超越', check: function(d){var now=new Date();var h=('0'+now.getHours()).slice(-2);var m=('0'+now.getMinutes()).slice(-2);var s=('0'+now.getSeconds()).slice(-2);return U.getEffectiveLength(d)===6&&d.substring(5,11)===h+m+s;} },
     { id: 'perfect-date',   name: '完美日期',  emoji: '🗓️',  score: 100000000, rarity: '超越', check: function(d){var now=new Date();var y=(''+now.getFullYear()).slice(-2);var m=('0'+(now.getMonth()+1)).slice(-2);var day=('0'+now.getDate()).slice(-2);return U.getEffectiveLength(d)===6&&d.substring(5,11)===y+m+day;} },

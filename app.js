@@ -162,6 +162,7 @@
             btn.disabled = false;
             btn.classList.remove('is-loading');
             isGenerating = false;
+            window.__currentNumber = numStr;
 
             try { if (navigator.vibrate) navigator.vibrate(12); } catch(e) {}
         }
@@ -178,6 +179,62 @@
         // 初始加载后自动生成一次
         resetDigits();
         setTimeout(handleGenerate, 1000);
+
+        // ========== 双经典切换（双击最佳行） ==========
+        var isShowingBest = false;
+        var savedCurrentNumber = '';
+
+        function displayNumber(numberStr) {
+            var digits = numberStr.split('');
+            digitEls.forEach(function(el, i) {
+                el.textContent = digits[i];
+                el.className = 'digit digit--revealed';
+            });
+            // 前导零处理
+            var trimmed = numberStr.replace(/^0+/, '');
+            var leadingZeroCount = numberStr.length - trimmed.length;
+            for (var i = 0; i < leadingZeroCount; i++) {
+                digitEls[i].className = 'digit digit--leading-zero';
+                digitEls[i].style.transform = 'scale(0.92)';
+            }
+            card.classList.add('number-card--glow');
+            setTimeout(function() { card.classList.remove('number-card--glow'); }, 400);
+        }
+
+        var bestRollBoxEl = document.getElementById('bestRollBox');
+        if (bestRollBoxEl) {
+            bestRollBoxEl.addEventListener('dblclick', function() {
+                if (isGenerating) return;
+                var best = window.Badges && window.Badges.getBest ? window.Badges.getBest() : null;
+                if (!best || !best.number) return;
+                if (isShowingBest) {
+                    // 切回当前
+                    if (savedCurrentNumber) {
+                        displayNumber(savedCurrentNumber);
+                        window.Badges.previewNumber(savedCurrentNumber);
+                    }
+                    isShowingBest = false;
+                    savedCurrentNumber = '';
+                } else {
+                    // 保存当前并显示最佳
+                    savedCurrentNumber = window.__currentNumber || '';
+                    if (!savedCurrentNumber) return;
+                    displayNumber(best.number);
+                    window.Badges.previewNumber(best.number);
+                    isShowingBest = true;
+                }
+            });
+        }
+
+        // 在 handleGenerate 中自动退出最佳模式
+        var origHandleGenerate = handleGenerate;
+        handleGenerate = function() {
+            if (isShowingBest) {
+                isShowingBest = false;
+                savedCurrentNumber = '';
+            }
+            return origHandleGenerate();
+        };
 
         // ========== 主题切换 ==========
         (function initTheme() {
@@ -216,26 +273,49 @@
             if (!autoBtn) return;
             var autoRunning = false;
             var autoTimer = null;
-            var AUTO_INTERVAL = 3000; // 3 秒
+            var AUTO_COOLDOWN = 500; // 0.5 秒冷却
+
+            function runAuto() {
+                if (!autoRunning) return;
+                if (!isGenerating) {
+                    handleGenerate();
+                    autoTimer = setTimeout(runAuto, AUTO_COOLDOWN);
+                } else {
+                    // 正在生成中，快速轮询等待结束
+                    autoTimer = setTimeout(runAuto, 50);
+                }
+            }
 
             autoBtn.addEventListener('click', function() {
                 if (autoRunning) {
-                    // 停止
                     autoRunning = false;
                     autoBtn.classList.remove('is-running');
-                    if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+                    if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
                 } else {
-                    // 启动
                     autoRunning = true;
                     autoBtn.classList.add('is-running');
-                    // 立刻执行一次
                     if (!isGenerating) handleGenerate();
-                    autoTimer = setInterval(function() {
-                        if (!isGenerating) handleGenerate();
-                    }, AUTO_INTERVAL);
+                    autoTimer = setTimeout(runAuto, AUTO_COOLDOWN);
                 }
             });
         })();
+
+        // ========== 仅当前切换按钮 ==========
+        var toggleActiveBtn = document.getElementById('toggleActiveBtn');
+        var toggleActiveValue = document.getElementById('toggleActiveValue');
+        if (toggleActiveBtn && toggleActiveValue && window.Badges && window.Badges.toggleShowActiveOnly) {
+            var initialActive = window.Badges.getShowActiveOnly();
+            if (initialActive) {
+                toggleActiveValue.textContent = '当前';
+                toggleActiveValue.style.color = '#fbbf24';
+            }
+            toggleActiveBtn.addEventListener('click', function() {
+                window.Badges.toggleShowActiveOnly();
+                var now = window.Badges.getShowActiveOnly();
+                toggleActiveValue.textContent = now ? '当前' : '全部';
+                toggleActiveValue.style.color = now ? '#fbbf24' : '';
+            });
+        }
 
         // ========== 分享按钮 ==========
         (function initShare() {
@@ -246,7 +326,7 @@
                 '终结': '\uD83D\uDFE5',   // 🟥
                 '超越': '\uD83D\uDD35',   // 🔵
                 '神话': '\uD83D\uDFE2',   // 🟢
-                '传说': '🩷',             // 🩷
+                '传说': '💖',             // 💖
                 '史诗': '\uD83D\uDFE8',   // 🟨
                 '稀有': '\uD83D\uDFE3',   // 🟣
                 '罕见': '\uD83D\uDFE6',   // 🟦

@@ -21,6 +21,7 @@
     var totalRolls = 0;
     var bestRollNum = '';
     var bestRollTP = 0;
+    var showActiveOnly = false;
 
     // ---------- localStorage ----------
     function saveToStorage() {
@@ -30,7 +31,8 @@
                 totalTP: totalTP,
                 totalRolls: totalRolls,
                 bestRollNum: bestRollNum,
-                bestRollTP: bestRollTP
+                bestRollTP: bestRollTP,
+                showActiveOnly: showActiveOnly
             };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
         } catch(e) {}
@@ -46,6 +48,7 @@
             if (typeof data.totalRolls === 'number') totalRolls = data.totalRolls;
             if (typeof data.bestRollTP === 'number') bestRollTP = data.bestRollTP;
             if (typeof data.bestRollNum === 'string') bestRollNum = data.bestRollNum;
+            if (typeof data.showActiveOnly === 'boolean') showActiveOnly = data.showActiveOnly;
         } catch(e) { earnedBadges = []; totalTP = 0; totalRolls = 0; }
     }
 
@@ -78,7 +81,6 @@
             if (defs[i].id === badge.id) {
                 pill.dataset.badgeId = badge.id;
                 pill.dataset.badgeDesc = getBadgeDesc(defs[i]);
-                pill.style.cursor = 'pointer';
                 break;
             }
         }
@@ -530,28 +532,75 @@
         if (tooltipEl) tooltipEl.classList.remove('tooltip--show');
     }
 
+    var tooltipPinned = false;
+    var tooltipPinnedPill = null;
+
+    function showTooltipAt(e, pill, desc) {
+        if (!tooltipEl) {
+            tooltipEl = document.getElementById('badgeTooltip');
+            if (!tooltipEl) return;
+        }
+        tooltipEl.innerHTML = '<div class="tooltip__desc">' + desc + '</div>';
+        tooltipEl.classList.add('tooltip--show');
+        var pad = 12;
+        var rect = tooltipEl.getBoundingClientRect();
+        var left = e.clientX + pad;
+        var top = e.clientY + pad;
+        if (left + rect.width > window.innerWidth) left = e.clientX - rect.width - pad;
+        if (top + rect.height > window.innerHeight) top = e.clientY - rect.height - pad;
+        if (left < pad) left = pad;
+        if (top < pad) top = pad;
+        tooltipEl.style.left = left + 'px';
+        tooltipEl.style.top = top + 'px';
+    }
+
+    function hideTooltip() {
+        if (!tooltipPinned && tooltipEl) tooltipEl.classList.remove('tooltip--show');
+    }
+
     function initTooltip() {
         tooltipEl = document.getElementById('badgeTooltip');
         if (!tooltipEl || !badgeListEl) return;
-        badgeListEl.addEventListener('click', function(e) {
+        // 悬浮显示
+        badgeListEl.addEventListener('mouseenter', function(e) {
             var pill = e.target.closest('.badge-pill');
             if (!pill) { hideTooltip(); return; }
-            e.stopPropagation();
-            if (tooltipEl.classList.contains('tooltip--show') && pill.dataset.activePill === '1') {
+            if (tooltipPinned) return;
+            showTooltipAt(e, pill, pill.dataset.badgeDesc || '');
+        }, true);
+        badgeListEl.addEventListener('mousemove', function(e) {
+            if (tooltipPinned || !tooltipEl) return;
+            var pill = e.target.closest('.badge-pill');
+            if (!pill) { hideTooltip(); return; }
+            showTooltipAt(e, pill, pill.dataset.badgeDesc || '');
+        });
+        badgeListEl.addEventListener('mouseleave', function(e) {
+            if (!tooltipPinned) hideTooltip();
+        }, true);
+        // 点击固定/取消
+        badgeListEl.addEventListener('click', function(e) {
+            var pill = e.target.closest('.badge-pill');
+            if (!pill) {
+                tooltipPinned = false;
+                tooltipPinnedPill = null;
                 hideTooltip();
-                pill.dataset.activePill = '0';
                 return;
             }
-            // 取消之前的活跃状态
-            var prev = badgeListEl.querySelector('[data-active-pill="1"]');
-            if (prev) prev.dataset.activePill = '0';
-            pill.dataset.activePill = '1';
-            showTooltip(pill, pill.dataset.badgeDesc || '');
+            e.stopPropagation();
+            if (tooltipPinned && pill === tooltipPinnedPill) {
+                tooltipPinned = false;
+                tooltipPinnedPill = null;
+                hideTooltip();
+                return;
+            }
+            tooltipPinned = true;
+            tooltipPinnedPill = pill;
+            showTooltipAt(e, pill, pill.dataset.badgeDesc || '');
         });
         document.addEventListener('click', function() {
+            tooltipPinned = false;
+            tooltipPinnedPill = null;
             hideTooltip();
-            var prev = badgeListEl.querySelector('[data-active-pill="1"]');
-            if (prev) prev.dataset.activePill = '0';
         });
     }
 
@@ -578,13 +627,17 @@
         totalScoreSpan.textContent = totalTP.toLocaleString();
         if (currentScoreSpan) currentScoreSpan.textContent = currentTP.toLocaleString();
 
-        // 最佳
+        // 最佳 — 有记录时才显示
         if (bestRollBox && bestRollTP > 0) {
             bestRollBox.style.display = '';
+            bestRollBox.classList.remove('no-record');
             if (bestRollNumSpan) bestRollNumSpan.textContent = bestRollNum;
             if (bestRollTPSpan) bestRollTPSpan.textContent = '+' + bestRollTP.toLocaleString() + 'TP';
         } else if (bestRollBox) {
-            bestRollBox.style.display = 'none';
+            bestRollBox.style.display = '';
+            bestRollBox.classList.add('no-record');
+            if (bestRollNumSpan) bestRollNumSpan.textContent = '—';
+            if (bestRollTPSpan) bestRollTPSpan.textContent = '0TP';
         }
 
         // 徽章列表
@@ -599,6 +652,7 @@
 
         var newBadges = [], oldBadges = [];
         sorted.forEach(function(badge) {
+            if (showActiveOnly && !isActiveBadge(badge)) return;
             if (newBadgeIds.hasOwnProperty(badge.id)) newBadges.push(badge);
             else oldBadges.push(badge);
         });
@@ -687,6 +741,21 @@
         saveToStorage();
     }
 
+    // ---------- 预览指定数字的徽章（不计数、不保存） ----------
+    function previewNumber(numberStr) {
+        currentNumberStr = numberStr;
+        currentTP = 0;
+        var defs = window.BadgeDefs || [];
+        for (var i = 0; i < defs.length; i++) {
+            var def = defs[i];
+            if (tryCheck(def, numberStr)) {
+                currentTP += def.score;
+            }
+        }
+        showAllBadges = false;
+        updateBadgeUI();
+    }
+
     function tryCheck(def, num) {
         try { return def.check(num); } catch(e) { return false; }
     }
@@ -711,10 +780,18 @@
         initBadgeUI: initBadgeUI,
         checkAndAwardBadges: checkAndAwardBadges,
         resetBadges: resetBadges,
+        previewNumber: previewNumber,
         getEarnedBadges: function() { return earnedBadges.slice(); },
         getTotalTP: function() { return totalTP; },
         getCurrentTP: function() { return currentTP; },
+        getBest: function() { return { number: bestRollNum, score: bestRollTP }; },
         getCurrentNumberStr: function() { return currentNumberStr; },
+        toggleShowActiveOnly: function() {
+            showActiveOnly = !showActiveOnly;
+            saveToStorage();
+            updateBadgeUI();
+        },
+        getShowActiveOnly: function() { return showActiveOnly; },
         getCurrentActiveBadges: function() {
             if (!currentNumberStr) return [];
             var defs = window.BadgeDefs || [];
